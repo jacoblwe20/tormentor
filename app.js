@@ -9,6 +9,7 @@ var express = require('express')
 
 var app = express();
 var sockets = [];
+var clients = {};
 
 app.locals.title = "Websocket Server";
 
@@ -39,11 +40,14 @@ app.get("/test", function(req, res){
 app.post("/", function(req, res){
   var data = req.body;
   console.log(data);
-  if(data.close){
+  if(data.closeall){
     for(var i = 0; i < sockets.length; i +=1){
       var socket = sockets[i];
-      socket.emit("close", {time : parseFloat(data.time)});
+      socket.emit("close", {});
     }
+  }
+  if(data.id && data.tab){
+    clients[data.id].socket.emit("close", {id : data.tab});
   }
   res.render("index");
 });
@@ -58,7 +62,30 @@ var io = require("socket.io").listen(app_);
 
 io.sockets.on("connection", function(socket){
   //console.log(socket);
+  var client = (Math.random() * 2342342342).toString().replace(/\./, "O");
   sockets.push(socket);
+  clients[client] = {socket : socket};
+
+  socket.on("new_tab", function(message){
+    if(!clients[client].tabs) clients[client].tabs = {};
+    clients[client].tabs[message.tab.id] = message.tab;
+  });
+
+  socket.on("new_tab", function(message){
+    if(!clients[client].tabs) clients[client].tabs = {};
+    clients[client].tabs[message.tab.id] = message.tab;
+    console.log({client : client, tab: message.tab});
+  });
+
+  socket.on("close_tab", function(message){
+    if(!clients[client].tabs) clients[client].tabs = {};
+    delete clients[client].tabs[message.tabid];
+  });
+
+  socket.on('disconnect', function () {
+    delete clients[client];
+  });
+
 });
 
 
