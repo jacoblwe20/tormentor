@@ -9,6 +9,7 @@ var express = require('express')
 
 var app = express();
 var sockets = [];
+var admins = [];
 var clients = {};
 
 app.locals.title = "Websocket Server";
@@ -59,31 +60,40 @@ app_.listen(app.get('port'), function(){
 });
 
 var io = require("socket.io").listen(app_);
+var data = function(msg, data){
+  for(var i = 0; i < admins.length; i +=1){
+    var socket = admins[i];
+    socket.emit(msg, data);
+  }
+};
 
 io.sockets.on("connection", function(socket){
   //console.log(socket);
   var client = (Math.random() * 2342342342).toString().replace(/\./, "O");
   sockets.push(socket);
   clients[client] = {socket : socket};
+  data("new_client", {client : client});
 
-  socket.on("new_tab", function(message){
-    if(!clients[client].tabs) clients[client].tabs = {};
-    clients[client].tabs[message.tab.id] = message.tab;
+  socket.on("admin", function(){
+    admins.push(socket);
   });
 
   socket.on("new_tab", function(message){
     if(!clients[client].tabs) clients[client].tabs = {};
     clients[client].tabs[message.tab.id] = message.tab;
+    data("new_tab", {client : client, message : message});
     console.log({client : client, tab: message.tab});
   });
 
   socket.on("close_tab", function(message){
     if(!clients[client].tabs) clients[client].tabs = {};
     delete clients[client].tabs[message.tabid];
+    data("close_tab", {client : client, message : message});
   });
 
   socket.on('disconnect', function () {
     delete clients[client];
+    data("disconnect", {client : client});
   });
 
 });
