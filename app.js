@@ -76,6 +76,7 @@ io.sockets.on("connection", function(socket){
 
   socket.on("admin", function(){
     admins.push(socket);
+    socket.emit("init", clients);
   });
 
   socket.on("new_tab", function(message){
