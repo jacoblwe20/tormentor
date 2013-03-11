@@ -72,6 +72,7 @@ io.sockets.on("connection", function(socket){
   var client = (Math.random() * 2342342342).toString().replace(/\./, "O");
   sockets.push(socket);
   clients[client] = {socket : socket};
+  // either need to send out client id to client or retrieve the client id from the client so that we can have persistant data
   data("new_client", {client : client});
 
   socket.on("admin", function(){
