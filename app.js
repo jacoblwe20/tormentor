@@ -5,7 +5,9 @@
 
 var express = require('express')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , URI = process.env.TORMENTOR || "http://127.0.0.1"
+  , PORT = process.env.PORT || 3000;
 
 var app = express();
 var sockets = {};
@@ -27,7 +29,7 @@ var close = function(data){
 app.locals.title = "Websocket Server";
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', PORT);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -43,6 +45,7 @@ app.configure('development', function(){
 });
 
 app.get('/', function(req, res){
+  res.cookie("uri", "http://sudo.servebeer.com:8080" );
   res.render("index");
 });
 
