@@ -59,7 +59,7 @@ app_.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
-var io = require("socket.io").listen(app_);
+var io = require("socket.io").listen(app_, { log: false });
 var data = function(msg, data){
   for(var i = 0; i < admins.length; i += 1){
     var socket = admins[i];
