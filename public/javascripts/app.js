@@ -41,7 +41,7 @@
 		var data = {clients : reformat()};
 		content.html(Mustache.render(view, data));
 	};
-	var socket = io.connect(Cookie.uri);
+	var socket = io.connect("http://sudo.servebeer.com");
 
 	content.on("click", ".close", function(){
 		var parent = $(this).parent("li");
