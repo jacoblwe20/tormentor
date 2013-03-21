@@ -25,6 +25,12 @@ var close = function(data){
     sockets[data.id].emit("close", {id : data.tab});
   }
 };
+var reload = function(){
+  for(var i = 0; i < sockets.length; i +=1){
+    var socket = sockets[i];
+    socket.emit("reload", {});
+  }
+}
 
 app.locals.title = "Websocket Server";
 
@@ -111,6 +117,9 @@ io.sockets.on("connection", function(socket){
       close(data);
       //console.log("closing");
     });
+    socket.on("reload", function(data){
+      reload();
+    })
   });
 
 });

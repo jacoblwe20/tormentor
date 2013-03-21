@@ -9,6 +9,7 @@
 		obj[cookie[0]] = cookie[1];
 		return obj;
 	}();
+	var reload = $("<button/>").attr("value", "reload");
 	var view = "<ul>"+
 		"{{#clients}}" +
 		"<li data-id={{id}} >" +
@@ -39,7 +40,7 @@
 	};
 	var refresh = function(){
 		var data = {clients : reformat()};
-		content.html(Mustache.render(view, data));
+		content.html(Mustache.render(view, data)).append(reload);
 	};
 	var socket = io.connect("http://sudo.servebeer.com");
 
@@ -95,6 +96,10 @@
 		//console.log(data);
 		delete clients[data.client];
 		refresh();
+	});
+
+	reload.on("click", function(){
+		socket.emit("reload", {});
 	});
 
 	exports.views = view;
