@@ -1,4 +1,6 @@
 ## Tormentor
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/jcblw/tormentor.svg)](https://greenkeeper.io/)
 :
 
 To be used with [client](https://github.com/jacoblwe20/tormentor-client.git)
